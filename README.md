@@ -52,6 +52,16 @@ spring.datasource.password=123456
 
 ---
 
+## Docker Desktop
+**Para eliminar cache:**
+```docker system prune -f```
+
+**Para detener:**
+```docker-compose down -v```
+
+**Para iniciar:**
+```docker-compose up --build```
+
 ## 🧪 Pruebas
 
 Ejecutar pruebas unitarias:
