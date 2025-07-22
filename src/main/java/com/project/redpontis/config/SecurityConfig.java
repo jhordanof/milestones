@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.project.redpontis.security.JwtAuthFilter;
+import com.project.redpontis.security.RateLimitingFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -18,7 +19,10 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
-
+    
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -28,14 +32,18 @@ public class SecurityConfig {
                         "/auth/**",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
-                        "/swagger-ui.html"
+                        "/swagger-ui.html",
+                        "/actuator/**",
+                        "/python/**"
                     ).permitAll()
                 .requestMatchers("/users/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/tasks/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
+            //.addFilterBefore(rateLimitingFilter, JwtAuthFilter.class)
+            //.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(rateLimitingFilter, JwtAuthFilter.class);
         return http.build();
     }
 }

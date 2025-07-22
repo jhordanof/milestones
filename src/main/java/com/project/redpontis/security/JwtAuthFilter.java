@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +24,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
+@Order(1)
 public class JwtAuthFilter extends OncePerRequestFilter {
-
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -42,10 +48,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Optional<User> userOpt = userService.getByUsername(username);
                 if (userOpt.isPresent()) {
                     User user = userOpt.get();
+                    log.info("User Auth: {} with role: ROLE_{}", username, user.getRole().name());
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
                     SecurityContextHolder.getContext().setAuthentication(auth);
+                }else {
+                	log.warn("User {} no se encontro", username);
                 }
+            }else {
+            	log.warn("Token es invalido");
             }
         }
 

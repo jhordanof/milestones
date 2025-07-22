@@ -3,6 +3,8 @@ package com.project.redpontis.api.controller;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import com.project.redpontis.service.UserService;
 @RestController
 public class LoginRestController implements ILoginRestController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
     @Autowired
     private AuthService authService;
     
@@ -32,8 +36,8 @@ public class LoginRestController implements ILoginRestController {
     @Autowired
     private JwtUtils jwtUtils;
     
-    @Override
-    public ResponseEntity<?> login(LoginDTO loginDTO) {
+    /*@Override
+    public ResponseEntity<?> login(LoginDTO loginDTO) {*/
     	/*Optional<User> userOpt = authService.login(loginDTO.getUsername(), loginDTO.getPassword());
 
     	if (userOpt.isPresent()) {
@@ -46,7 +50,7 @@ public class LoginRestController implements ILoginRestController {
     	} else {
     	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o password invalidas");
     	}*/
-        Optional<User> userOpt = authService.login(loginDTO.getUsername(), loginDTO.getPassword());
+        /*Optional<User> userOpt = authService.login(loginDTO.getUsername(), loginDTO.getPassword());
         if (userOpt.isPresent()) {
             String token = jwtUtils.generateToken(userOpt.get());
             return ResponseEntity.ok(Map.of(
@@ -56,7 +60,27 @@ public class LoginRestController implements ILoginRestController {
             ));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+    }*/
+    
+    @Override
+    public ResponseEntity<?> login(LoginDTO loginDTO) {
+    	log.info("Intento de login para el usuario: {}", loginDTO.getUsername());
+
+        Optional<User> userOpt = authService.login(loginDTO.getUsername(), loginDTO.getPassword());
+        if (userOpt.isPresent()) {
+            String token = jwtUtils.generateToken(userOpt.get());
+            log.info("Login exitoso para el usuario: {}", loginDTO.getUsername());
+            return ResponseEntity.ok(Map.of(
+                "token", token,
+                "username", userOpt.get().getUsername(),
+                "role", userOpt.get().getRole().name()
+            ));
+        }
+
+        log.warn("Login fallido para el usuario: {}", loginDTO.getUsername());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
+
     
     @Override
     public ResponseEntity<UserDTO> register(UserDTO dto) {

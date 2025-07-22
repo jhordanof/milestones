@@ -2,6 +2,8 @@ package com.project.redpontis.api.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +15,9 @@ import com.project.redpontis.service.UserService;
 
 @RestController
 public class UserRestController implements IUserRestController {
-
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
     @Autowired
     private UserService userService;
 
@@ -55,8 +59,17 @@ public class UserRestController implements IUserRestController {
 
     @Override
     public ResponseEntity<Void> deleteUser(Long id) {
-        return userService.deleteUser(id)
+        /*return userService.deleteUser(id)
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+                : ResponseEntity.notFound().build();*/
+    	log.info("[Eliminar Usuario] -> ID {}", id);
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+        	log.info("Usuario Eliminado");
+            return ResponseEntity.noContent().build();
+        } else {
+        	log.warn("No se pudo eliminar usuario con ID {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 }
