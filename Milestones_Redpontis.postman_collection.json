@@ -324,6 +324,59 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Python microservicio Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/milestones/api/python/ping",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"milestones",
+						"api",
+						"python",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Python microservicio Convert Texto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"text\": \"Hola Jhordano\",\r\n  \"to_upper\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/milestones/api/python/convert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"milestones",
+						"api",
+						"python",
+						"convert"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

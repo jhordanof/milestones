@@ -182,6 +182,95 @@ Authorization: Bearer {JWT_TOKEN}
 
 ---
 
+## Actuator & Prometheus
+
+La API expone métricas y estado de la aplicación usando Spring Boot Actuator.
+
+- URL base: `http://localhost:8080/milestones/api/actuator`
+- Endpoint de Prometheus: `/actuator/prometheus`
+
+Ejemplo:
+```
+http://localhost:8080/milestones/api/actuator/health
+http://localhost:8080/milestones/api/actuator/prometheus
+```
+
+---
+
+### Cómo levantar el microservicio
+
+```bash
+- cd python-microservice
+
+- python -m venv venv
+- venv\Scripts\activate
+- pip install fastapi uvicorn
+- pip install -r requirements.txt
+
+- uvicorn main:app --reload --port 8001
+```
+
+### 🔁 Microservicio Python
+
+**Ping**:
+
+```http
+GET http://localhost:8001/ping
+
+Response:
+{
+  "response_time": 0.12
+}
+```
+
+**Convertidor**:
+
+```http
+POST http://localhost:8001/convert
+Content-Type: application/json
+
+{
+  "text": "Hola Jhordano",
+  "to_upper": true
+}
+
+Response:
+{
+  "original": "Hola Jhordano",
+  "convertido": "HOLA JHORDANO"
+}
+```
+
+---
+
+### 🔁 Api Python Consumo desde Java
+
+**Ping**:
+
+```http
+GET http://localhost:8080/milestones/api/python/ping
+
+Response:
+{
+  "Tiempo: 0.0 ms"
+}
+```
+**Convertidor**:
+```http
+POST http://localhost:8080/milestones/api/python/convert
+Content-Type: application/json
+
+{
+  "text": "Hola Jhordano",
+  "to_upper": true
+}
+
+Response:
+{original=Hola Jhordano, convertido=HOLA JHORDANO}
+```
+
+---
+
 ## 👨‍💻 Autor
 
 **Jhordano Flores**  
